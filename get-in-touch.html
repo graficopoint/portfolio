@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>contact</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            body {
+                font-family: "Inter", sans-serif;
+                background-color: #000000; /* Solid black base */
+                position: relative;
+                min-height: 100vh;
+                overflow-x: hidden; /* Prevents horizontal scroll */
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center; /* Center content vertically */
+                padding: 2rem; /* Add some padding around the content */
+            }
+
+            /* Cosmic background image */
+            body::before {
+                content: "";
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-image: url('./attached_assets/bg_1.png');
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                z-index: -2;
+                opacity: 0.9;
+            }
+
+            /* Dark overlay from homepage */
+            body::after {
+                content: "";
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(
+                    to bottom right,
+                    rgba(0, 0, 0, 0.4),
+                    rgba(0, 0, 0, 0.2)
+                );
+                z-index: -1;
+            }
+
+            
+
+            /* Main content container styling */
+            .content-card {
+                background-color: rgba(
+                    0,
+                    0,
+                    0,
+                    0.7
+                ); /* Slightly more opaque for readability */
+                backdrop-filter: blur(8px); /* Stronger blur effect */
+                border-radius: 1.5rem; /* More rounded corners */
+                border: 1px solid rgba(255, 215, 0, 0.2); /* Subtle gold border */
+                box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5); /* Deeper shadow */
+                padding: 2.5rem;
+                max-width: 800px;
+                width: 100%;
+                text-align: center;
+                position: relative; /* Ensure z-index works */
+                z-index: 1; /* Above background layers */
+            }
+
+            .main-heading {
+                font-family: "Playfair Display", serif;
+                color: #ffd700; /* Gold */
+                text-shadow: 0 0 15px rgba(255, 215, 0, 0.7); /* Stronger glow */
+            }
+
+            /* Custom style for the introductory sub-text */
+            .intro-sub-text {
+                font-family: "Playfair Display", serif; /* Apply Playfair Display font */
+                font-size: 0.8em; /* Reduced size by approximately 10% more */
+                font-style: italic; /* Made italic */
+                color: #c0c0c0; /* Keep the color */
+            }
+
+            .contact-info-item {
+                color: #e0e0e0;
+            }
+
+            .contact-link {
+                color: #ffd700; /* Gold */
+                transition:
+                    color 0.2s ease-in-out,
+                    text-shadow 0.2s ease-in-out;
+            }
+            .contact-link:hover {
+                color: #fff;
+                text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
+            }
+
+            /* Form specific styles */
+            .contact-form input[type="text"],
+            .contact-form input[type="email"],
+            .contact-form textarea {
+                background-color: rgba(0, 0, 0, 0.4);
+                border: 1px solid rgba(255, 215, 0, 0.3);
+                color: #e0e0e0;
+                padding: 0.75rem;
+                border-radius: 0.5rem;
+                width: 100%;
+                font-family: "Inter", sans-serif;
+                transition:
+                    border-color 0.2s ease-in-out,
+                    box-shadow 0.2s ease-in-out;
+            }
+
+            .contact-form input[type="text"]:focus,
+            .contact-form input[type="email"]:focus,
+            .contact-form textarea:focus {
+                outline: none;
+                border-color: #ffd700;
+                box-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+            }
+
+            .contact-form textarea {
+                min-height: 120px;
+                resize: vertical;
+            }
+
+            .submit-button {
+                background-color: #ffd700; /* Gold background */
+                color: #000000; /* Black text */
+                padding: 0.75rem 2rem;
+                border-radius: 9999px; /* Fully rounded */
+                font-weight: 600;
+                transition:
+                    background-color 0.2s ease-in-out,
+                    transform 0.1s ease-in-out,
+                    box-shadow 0.2s ease-in-out;
+                box-shadow: 0 4px 10px rgba(255, 215, 0, 0.3);
+                cursor: pointer;
+            }
+
+            .submit-button:hover {
+                background-color: #fff; /* Lighter on hover */
+                transform: translateY(-2px); /* Slight lift */
+                box-shadow: 0 6px 12px rgba(255, 215, 0, 0.5);
+            }
+
+            .back-button {
+                color: #ffd700;
+                transition: all 0.1s ease-out;
+                text-shadow: 0 0 0px rgba(255, 215, 0, 0);
+                padding: 0.75rem 1.5rem;
+                border-radius: 9999px;
+                border: 1px solid rgba(255, 215, 0, 0.3);
+                background-color: rgba(0, 0, 0, 0.6);
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                margin-top: 3rem;
+            }
+            .back-button:hover {
+                color: #fff;
+                transform: scale(1.02);
+                text-shadow: 0 0 5px rgba(255, 215, 0, 0.4);
+            }
+
+            /* Footer styling */
+            footer {
+                margin-top: 2rem;
+                color: #777;
+                font-size: 0.875rem;
+                position: relative;
+                z-index: 1;
+            }
+
+            /* Responsive adjustments */
+            @media (max-width: 640px) {
+                .content-card {
+                    padding: 1.5rem;
+                }
+                .main-heading {
+                    font-size: 2.5rem;
+                }
+                .intro-sub-text {
+                    /* Adjust for mobile if needed */
+                    font-size: 0.7em; /* Further reduction for smaller screens */
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="content-card">
+            <h1
+                class="main-heading text-4xl md:text-5xl lg:text-6xl font-bold mb-4"
+            >
+                Get in Touch
+            </h1>
+            <p class="intro-sub-text text-lg md:text-xl mb-8">
+                Have a project in mind, a question, or something else related to
+                designing/printing? Use the form below or reach out directly.
+            </p>
+
+            <div class="space-y-4 mb-10">
+                <p class="contact-info-item text-lg md:text-xl">
+                    Email:
+                    <a
+                        href="mailto:squarejed@gmail.com"
+                        class="contact-link"
+                        >squarejed@gmail.com</a
+                    >
+                </p>
+                <p class="contact-info-item text-lg md:text-xl">
+                    LinkedIn:
+                    <a
+                        href="https://www.linkedin.com/in/rajeshthedesigner"
+                        target="_blank"
+                        class="contact-link"
+                        >www.linkedin.com/in/rajeshthedesigner</a
+                    >
+                </p>
+            </div>
+
+            <form class="contact-form space-y-6 text-left">
+                <div>
+                    <label
+                        for="name"
+                        class="block text-gray-300 text-sm font-medium mb-2"
+                        >Name</label
+                    >
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        required
+                        placeholder="Your Name"
+                    />
+                </div>
+                <div>
+                    <label
+                        for="email"
+                        class="block text-gray-300 text-sm font-medium mb-2"
+                        >Email</label
+                    >
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        required
+                        placeholder="your.email@example.com"
+                    />
+                </div>
+                <div>
+                    <label
+                        for="subject"
+                        class="block text-gray-300 text-sm font-medium mb-2"
+                        >Subject</label
+                    >
+                    <input
+                        type="text"
+                        id="subject"
+                        name="subject"
+                        required
+                        placeholder="Project Inquiry, Question, etc."
+                    />
+                </div>
+                <div>
+                    <label
+                        for="message"
+                        class="block text-gray-300 text-sm font-medium mb-2"
+                        >Message</label
+                    >
+                    <textarea
+                        id="message"
+                        name="message"
+                        required
+                        placeholder="Tell me about your project or inquiry..."
+                    ></textarea>
+                </div>
+                <div class="text-center pt-4">
+                    <button type="submit" class="submit-button">
+                        Send Message
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <a href="index.html" class="back-button">
+            <svg
+                class="icon w-5 h-5 mr-2"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+            >
+                <path
+                    fill-rule="evenodd"
+                    d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 001.414 1.414L5.414 9H17a1 1 0 110 2H5.414l3.293 3.293a1 1 0 010 1.414z"
+                    clip-rule="evenodd"
+                ></path>
+            </svg>
+            Back to Home
+        </a>
+
+        <footer>
+            &copy; 2024 Rajesh - Visual Designer. All rights reserved.
+        </footer>
+    </body>
+</html>

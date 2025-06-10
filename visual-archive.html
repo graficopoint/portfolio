@@ -1,0 +1,931 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Archive</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            body {
+                font-family: "Inter", sans-serif;
+                background-color: #000000; /* Solid black base */
+                position: relative;
+                min-height: 100vh;
+                overflow-x: hidden; /* Prevents horizontal scroll */
+            }
+
+            /*
+        A pseudo-element (::before) is used to display the uploaded cosmic background image.
+        This layer now serves as the primary background.
+        */
+            body::before {
+                content: "";
+                position: fixed; /* Ensures it covers the entire viewport */
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-image: url("./attached_assets/bg_1.png");
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                z-index: -2;
+                opacity: 0.9;
+            }
+
+            /*
+        A second pseudo-element (::after) is used for the dark overlay,
+        ensuring content readability. It sits above the animated gradients.
+        */
+            body::after {
+                content: "";
+                position: fixed; /* Fixed to cover the entire viewport */
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                /* This overlay adds a subtle dark tint and blend effect over the background */
+                background: linear-gradient(
+                    to bottom right,
+                    rgba(0, 0, 0, 0.4),
+                    rgba(0, 0, 0, 0.2)
+                ); /* Slightly less opaque */
+                z-index: -1; /* Placed above the animated gradients (z-index: -2) and below main content */
+            }
+
+            /* Ensure main content is above all background layers */
+            .page-content {
+                position: relative; /* Essential for z-index to work */
+                z-index: 1; /* Places the main content above all pseudo-elements */
+                display: flex;
+                flex-direction: column;
+                align-items: center; /* Center content horizontally */
+                text-align: center;
+                color: #e0e0e0;
+                padding: 2rem; /* Overall padding for the page content area */
+                width: 100%; /* Ensure it takes full width for content */
+                max-width: 1200px; /* Limit content width */
+            }
+
+            /* Reduced heading size and margin */
+            .heading-text {
+                font-family: "Playfair Display", serif;
+                color: #ffd700;
+                text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+                margin-bottom: 0.5rem; /* Further reduced margin-bottom */
+                font-size: 2rem; /* Reduced by ~10% from 2.25rem */
+            }
+            @media (min-width: 768px) {
+                /* md breakpoint */
+                .heading-text {
+                    font-size: 2.75rem; /* Reduced by ~10% from 3rem */
+                }
+            }
+            @media (min-width: 1024px) {
+                /* lg breakpoint */
+                .heading-text {
+                    font-size: 3.25rem; /* Reduced by ~10% from 3.5rem */
+                }
+            }
+
+            /* Reduced intro text size and margin */
+            .intro-text {
+                font-family: "Playfair Display", serif;
+                color: #c0c0c0;
+                font-style: italic;
+                line-height: 1.8;
+                margin-bottom: 0.75rem; /* Further reduced margin-bottom */
+                font-size: 0.75rem; /* Reduced by ~10% from 0.875rem */
+            }
+            @media (min-width: 768px) {
+                /* md breakpoint */
+                .intro-text {
+                    font-size: 0.875rem; /* Reduced by ~10% from 1rem */
+                }
+            }
+
+            .back-button {
+                color: #ffd700; /* Gold text color */
+                transition: all 0.1s ease-out;
+                text-shadow: 0 0 0px rgba(255, 215, 0, 0);
+                padding: 0.75rem 1.5rem;
+                border-radius: 9999px;
+                border: 1px solid rgba(255, 215, 0, 0.3);
+                background-color: rgba(0, 0, 0, 0.6);
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                margin-top: 3rem; /* Adjusted margin-top for spacing after gallery */
+            }
+            .back-button:hover {
+                color: #fff;
+                transform: scale(1.02);
+                text-shadow: 0 0 5px rgba(255, 215, 0, 0.4);
+            }
+
+            /* Tab Navigation Styles - Adjusted */
+            #category-tabs {
+                display: flex;
+                flex-wrap: wrap; /* Allow tabs to wrap to the next line */
+                justify-content: center; /* Center tabs horizontally */
+                gap: 1rem; /* Increased space between tab buttons */
+                width: 100%; /* Take full width */
+                max-width: 900px; /* Limit max width for better aesthetics */
+                margin-bottom: 2rem; /* Space below the tab container */
+            }
+
+            .tab-button {
+                /* Removed @apply px-5 py-2 rounded-full text-base font-medium whitespace-nowrap;
+               and replaced with explicit properties for more control */
+                font-size: 0.8rem; /* Further reduced text size */
+                padding: 0.5rem 1.1rem; /* Adjusted padding for better rounded appearance with smaller text */
+                border-radius: 9999px; /* Ensures fully rounded (pill shape) corners */
+                white-space: nowrap; /* Prevents text from wrapping inside the button */
+                font-weight: 500; /* Medium font weight */
+
+                color: #e0e0e0;
+                background-color: rgba(0, 0, 0, 0.4);
+                border: none; /* No border by default */
+                outline: none; /* No outline by default */
+                transition: all 0.2s ease-in-out;
+                position: relative;
+                z-index: 1;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+                backdrop-filter: blur(3px);
+            }
+            .tab-button:hover {
+                color: #ffd700;
+                transform: translateY(-1px);
+                background-color: rgba(0, 0, 0, 0.6);
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+            }
+            .tab-button.active {
+                color: #000000; /* Black text on gold background */
+                background-color: #ffd700; /* Solid gold background */
+                box-shadow: 0 0 15px rgba(255, 215, 0, 0.8); /* Stronger glow */
+                transform: scale(1.02); /* Slight scale for active */
+                border: none; /* Ensure no border when active */
+                outline: none; /* Ensure no outline when active */
+            }
+
+            /* Gallery Item Styles */
+            .gallery-item {
+                @apply relative overflow-hidden rounded-xl shadow-lg; /* Changed to rounded-xl */
+                border: 1px solid rgba(255, 215, 0, 0.2);
+                background-color: rgba(0, 0, 0, 0.5);
+                transition:
+                    transform 0.2s ease-out,
+                    box-shadow 0.2s ease-out;
+            }
+            .gallery-item:hover {
+                transform: translateY(-5px) scale(1.02);
+                box-shadow: 0 8px 16px rgba(255, 215, 0, 0.2);
+            }
+            .gallery-item img {
+                @apply w-full h-auto object-cover;
+                border-radius: 0.75rem; /* Slightly more rounded image corners */
+                transition: transform 0.3s ease-out;
+            }
+            .gallery-item:hover img {
+                transform: scale(1.05);
+            }
+        </style>
+    </head>
+    <body
+        class="flex flex-col items-center min-h-screen pt-6 px-4 pb-4 md:pt-10 md:px-8 md:pb-8"
+    >
+        <div class="page-content">
+            <h1 class="font-bold heading-text">Visual Archive</h1>
+            <p class="intro-text max-w-2xl">
+                Explore a diverse collection of my design work, meticulously
+                crafted to bring clarity and impact to every project.
+            </p>
+
+            <div id="category-tabs">
+                <button class="tab-button active" data-category="packaging">
+                    Packaging
+                </button>
+                <button class="tab-button" data-category="logo">Logo</button>
+                <button class="tab-button" data-category="business-card">
+                    Business Card
+                </button>
+                <button class="tab-button" data-category="photo-manipulation">
+                    Photo Manipulation
+                </button>
+                <button class="tab-button" data-category="book-cover">
+                    Book Cover/Magazine Ad
+                </button>
+                <button class="tab-button" data-category="greeting-card">
+                    Greeting/Card
+                </button>
+                <button class="tab-button" data-category="letterhead">
+                    Letterhead/Folder/Calendar
+                </button>
+                <button class="tab-button" data-category="t-shirt">
+                    T-shirt/Vector
+                </button>
+                <button class="tab-button" data-category="brochure">
+                    Brochure/Catalogue
+                </button>
+                <button class="tab-button" data-category="other-mix">
+                    Other Mix
+                </button>
+            </div>
+
+            <div id="gallery-container" class="w-full max-w-6xl"></div>
+
+            <a href="index.html" class="back-button">
+                <svg
+                    class="icon w-5 h-5 mr-2"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg"
+                >
+                    <path
+                        fill-rule="evenodd"
+                        d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 001.414 1.414L5.414 9H17a1 1 0 110 2H5.414l3.293 3.293a1 1 0 010 1.414z"
+                        clip-rule="evenodd"
+                    ></path>
+                </svg>
+                Back to Home
+            </a>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const categories = {
+                    packaging: {
+                        title: "Packaging Design",
+                        images: [
+                            {
+                                src: "visual-archive_packaging/Packaging 1.jpg",
+                                alt: "Packaging 1",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 2.jpg",
+                                alt: "Packaging 2",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 3.jpg",
+                                alt: "Packaging 3",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 4.jpg",
+                                alt: "Packaging 4",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 5.jpg",
+                                alt: "Packaging 5",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 6.jpg",
+                                alt: "Packaging 6",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 7.jpg",
+                                alt: "Packaging 7",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 8.jpg",
+                                alt: "Packaging 8",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 9.jpg",
+                                alt: "Packaging 9",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 10.jpg",
+                                alt: "Packaging 10",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 11.jpg",
+                                alt: "Packaging 11",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 12.jpg",
+                                alt: "Packaging 12",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 13.jpg",
+                                alt: "Packaging 13",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 14.jpg",
+                                alt: "Packaging 14",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 15.jpg",
+                                alt: "Packaging 15",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 16.jpg",
+                                alt: "Packaging 16",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 17.jpg",
+                                alt: "Packaging 17",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 18.jpg",
+                                alt: "Packaging 18",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 19.jpg",
+                                alt: "Packaging 19",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 20.jpg",
+                                alt: "Packaging 20",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 21.jpg",
+                                alt: "Packaging 21",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 22.jpg",
+                                alt: "Packaging 22",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 23.jpg",
+                                alt: "Packaging 23",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 24.jpg",
+                                alt: "Packaging 24",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 25.jpg",
+                                alt: "Packaging 25",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 26.jpg",
+                                alt: "Packaging 26",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 27.jpg",
+                                alt: "Packaging 27",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 28.jpg",
+                                alt: "Packaging 28",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 29.jpg",
+                                alt: "Packaging 29",
+                            },
+                            {
+                                src: "visual-archive_packaging/Packaging 30.jpg",
+                                alt: "Packaging 30",
+                            },
+                        ],
+                    },
+                    logo: {
+                        title: "Logo Design",
+                        images: [
+                            {
+                                src: "visual-archive_logo/Logo 1.jpg",
+                                alt: "Logo 1",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 2.jpg",
+                                alt: "Logo 2",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 3.jpg",
+                                alt: "Logo 3",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 4.jpg",
+                                alt: "Logo 4",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 5.jpg",
+                                alt: "Logo 5",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 6.jpg",
+                                alt: "Logo 6",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 7.jpg",
+                                alt: "Logo 7",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 8.jpg",
+                                alt: "Logo 8",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 9.jpg",
+                                alt: "Logo 9",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 10.jpg",
+                                alt: "Logo 10",
+                            },
+
+                            {
+                                src: "visual-archive_logo/Logo 11.jpg",
+                                alt: "Logo 11",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 12.jpg",
+                                alt: "Logo 12",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 13.jpg",
+                                alt: "Logo 13",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 14.jpg",
+                                alt: "Logo 14",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 15.jpg",
+                                alt: "Logo 15",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 16.jpg",
+                                alt: "Logo 16",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 17.jpg",
+                                alt: "Logo 17",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 18.jpg",
+                                alt: "Logo 18",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 19.jpg",
+                                alt: "Logo 19",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 20.jpg",
+                                alt: "Logo 20",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 21.jpg",
+                                alt: "Logo 21",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 22.jpg",
+                                alt: "Logo 22",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 23.jpg",
+                                alt: "Logo 23",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 24.jpg",
+                                alt: "Logo 24",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 25.jpg",
+                                alt: "Logo 25",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 26.jpg",
+                                alt: "Logo 26",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 27.jpg",
+                                alt: "Logo 27",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 28.jpg",
+                                alt: "Logo 28",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 29.jpg",
+                                alt: "Logo 29",
+                            },
+                            {
+                                src: "visual-archive_logo/Logo 30.jpg",
+                                alt: "Logo 30",
+                            },
+                        ],
+                    },
+                    "business-card": {
+                        title: "Business Card Design",
+                        images: [
+                            {
+                                src: "visual-archive_V-card/V-Card 1.jpg",
+                                alt: "V-Card 1",
+                            },
+                            {
+                                src: "visual-archive_V-card/V-Card 2.jpg",
+                                alt: "V-Card 2",
+                            },
+                            {
+                                src: "visual-archive_V-card/V-Card 3.jpg",
+                                alt: "V-Card 3",
+                            },
+                            {
+                                src: "visual-archive_V-card/V-Card 4.jpg",
+                                alt: "V-Card 4",
+                            },
+                            {
+                                src: "visual-archive_V-card/V-Card 5.jpg",
+                                alt: "V-Card 5",
+                            },
+                            {
+                                src: "visual-archive_V-card/V-Card 6.jpg",
+                                alt: "V-Card 6",
+                            },
+                            {
+                                src: "visual-archive_V-card/V-Card 7.jpg",
+                                alt: "V-Card 7",
+                            },
+                            {
+                                src: "visual-archive_V-card/V-Card 8.jpg",
+                                alt: "V-Card 8",
+                            },
+                            {
+                                src: "visual-archive_V-card/V-Card 9.jpg",
+                                alt: "V-Card 9",
+                            },
+                            {
+                                src: "visual-archive_V-card/V-Card 10.jpg",
+                                alt: "V-Card 10",
+                            },
+                            {
+                                src: "visual-archive_V-card/V-Card 11.jpg",
+                                alt: "V-Card 11",
+                            },
+                            {
+                                src: "visual-archive_V-card/V-Card 12.jpg",
+                                alt: "V-Card 12",
+                            },
+                            {
+                                src: "visual-archive_V-card/V-Card 13.jpg",
+                                alt: "V-Card 13",
+                            },
+                            {
+                                src: "visual-archive_V-card/V-Card 14.jpg",
+                                alt: "V-Card 14",
+                            },
+                            {
+                                src: "visual-archive_V-card/V-Card 15.jpg",
+                                alt: "V-Card 15",
+                            },
+                        ],
+                    },
+                    "photo-manipulation": {
+                        title: "Photo Manipulation",
+                        images: [
+                            {
+                                src: "photo/photo 1.jpg",
+                                alt: "Photo 1",
+                            },
+                            {
+                                src: "photo/photo 2.jpg",
+                                alt: "Photo 2",
+                            },
+                            {
+                                src: "photo/photo 3.jpg",
+                                alt: "Photo 3",
+                            },
+                            {
+                                src: "photo/photo 4.jpg",
+                                alt: "Photo 4",
+                            },
+                            {
+                                src: "photo/photo 5.jpg",
+                                alt: "Photo 5",
+                            },
+                            {
+                                src: "photo/photo 6.jpg",
+                                alt: "Photo 6",
+                            },
+                            {
+                                src: "photo/photo 7.jpg",
+                                alt: "Photo 7",
+                            },
+                            {
+                                src: "photo/photo 8.jpg",
+                                alt: "Photo 8",
+                            },
+                            {
+                                src: "photo/photo 9.jpg",
+                                alt: "Photo 9",
+                            },
+                            {
+                                src: "photo/photo 10.jpg",
+                                alt: "Photo 10",
+                            },
+                            {
+                                src: "photo/photo 11.jpg",
+                                alt: "Photo 11",
+                            },
+                            {
+                                src: "photo/photo 12.jpg",
+                                alt: "Photo 12",
+                            },
+                            {
+                                src: "photo/photo 13.jpg",
+                                alt: "Photo 13",
+                            },
+                            {
+                                src: "photo/photo 14.jpg",
+                                alt: "Photo 14",
+                            },
+                            {
+                                src: "photo/photo 15.jpg",
+                                alt: "Photo 15",
+                            },
+                        ],
+                    },
+                    "book-cover": {
+                        title: "Book Cover/Magazine Ad",
+                        images: [
+                            {
+                                src: "book/bcma 1.jpg",
+                                alt: "bcma 1",
+                            },
+                            {
+                                src: "book/bcma 2.jpg",
+                                alt: "bcma 2",
+                            },
+                            {
+                                src: "book/bcma 3.jpg",
+                                alt: "bcma 3",
+                            },
+                            {
+                                src: "book/bcma 4.jpg",
+                                alt: "bcma 4",
+                            },
+                            {
+                                src: "book/bcma 5.jpg",
+                                alt: "bcma 5",
+                            },
+                            {
+                                src: "book/bcma 6.jpg",
+                                alt: "bcma 6",
+                            },
+                            {
+                                src: "book/bcma 7.jpg",
+                                alt: "bcma 7",
+                            },
+                            {
+                                src: "book/bcma 8.jpg",
+                                alt: "bcma 8",
+                            },
+                        ],
+                    },
+                    "greeting-card": {
+                        title: "Greeting/Card Design",
+                        images: [
+                            {
+                                src: "grt/grt 1.jpg",
+                                alt: "grt 1",
+                            },
+                            {
+                                src: "grt/grt 2.jpg",
+                                alt: "grt 2",
+                            },
+                            {
+                                src: "grt/grt 3.jpg",
+                                alt: "grt 3",
+                            },
+                            {
+                                src: "grt/grt 4.jpg",
+                                alt: "grt 4",
+                            },
+                            {
+                                src: "grt/grt 5.jpg",
+                                alt: "grt 5",
+                            },
+                            {
+                                src: "grt/grt 6.jpg",
+                                alt: "grt 6",
+                            },
+                            {
+                                src: "grt/grt 7.jpg",
+                                alt: "grt 7",
+                            },
+                        ],
+                    },
+                    letterhead: {
+                        title: "Letterhead/Folder/Calendar",
+                        images: [
+                            {
+                                src: "LFC/cal 1.jpg",
+                                alt: "cal 1",
+                            },
+                            {
+                                src: "LFC/cal 2.jpg",
+                                alt: "Letterhead 2",
+                            },
+                            {
+                                src: "LFC/cal 3.jpg",
+                                alt: "Letterhead 3",
+                            },
+                            {
+                                src: "LFC/cal 4.jpg",
+                                alt: "Letterhead 4",
+                            },
+                            {
+                                src: "LFC/cal 5.jpg",
+                                alt: "cal 5",
+                            },
+                            {
+                                src: "LFC/cal 6.jpg",
+                                alt: "cal 6",
+                            },
+                            {
+                                src: "LFC/cal 7.jpg",
+                                alt: "cal 7",
+                            },
+                            {
+                                src: "LFC/cal 8.jpg",
+                                alt: "cal 8",
+                            },
+                            {
+                                src: "LFC/cal 9.jpg",
+                                alt: "cal 9",
+                            },
+                            {
+                                src: "LFC/cal 10.jpg",
+                                alt: "cal 10",
+                            },
+                            {
+                                src: "LFC/cal 11.jpg",
+                                alt: "cal 11",
+                            },
+                            {
+                                src: "LFC/cal 12.jpg",
+                                alt: "cal 12",
+                            },
+                            {
+                                src: "LFC/cal 13.jpg",
+                                alt: "cal 15",
+                            },
+                        ],
+                    },
+                    "t-shirt": {
+                        title: "T-shirt/Vector Art",
+                        images: [
+                            {
+                                src: "ts/TS 1.jpg",
+                                alt: "TS 1",
+                            },
+                            {
+                                src: "ts/TS 2.jpg",
+                                alt: "TS 2",
+                            },
+                            {
+                                src: "ts/TS 3.jpg",
+                                alt: "TS 3",
+                            },
+                            {
+                                src: "ts/TS 4.jpg",
+                                alt: "TS 4",
+                            },
+                            {
+                                src: "ts/TS 5.jpg",
+                                alt: "TS 5",
+                            },
+                            {
+                                src: "ts/TS 6.jpg",
+                                alt: "TS 6",
+                            },
+                            {
+                                src: "ts/TS 7.jpg",
+                                alt: "TS 7",
+                            },
+                            {
+                                src: "ts/VC 1.jpg",
+                                alt: "VC 1",
+                            },
+                            {
+                                src: "ts/VC 2.jpg",
+                                alt: "VC 2",
+                            },
+                            {
+                                src: "ts/VC 3.jpg",
+                                alt: "VC 3",
+                            },
+                        ],
+                    },
+                    brochure: {
+                        title: "Brochure/Catalogue Design",
+                        images: [
+                            {
+                                src: "bro/bro 1.jpg",
+                                alt: "bro 1",
+                            },
+                            {
+                                src: "bro/bro 2.jpg",
+                                alt: "bro 2",
+                            },
+                            {
+                                src: "bro/bro 3.jpg",
+                                alt: "bro 3",
+                            },
+                            {
+                                src: "bro/bro 4.jpg",
+                                alt: "bro 4",
+                            },
+                            {
+                                src: "bro/bro 5.jpg",
+                                alt: "bro 5",
+                            },
+                        ],
+                    },
+                    "other-mix": {
+                        title: "Other Mix",
+                        images: [
+                            {
+                                src: "mix/mix 1.jpg",
+                                alt: "mix 1",
+                            },
+                            {
+                                src: "mix/mix 2.jpg",
+                                alt: "mix 2",
+                            },
+                            {
+                                src: "mix/mix 3.jpg",
+                                alt: "mix 3",
+                            },
+                            {
+                                src: "mix/mix 4.jpg",
+                                alt: "mix 4",
+                            },
+                            {
+                                src: "mix/mix 5.jpg",
+                                alt: "mix 5",
+                            },
+                            {
+                                src: "mix/mix 6.jpg",
+                                alt: "mix 6",
+                            },
+                            {
+                                src: "mix/mix 7.jpg",
+                                alt: "mix 7",
+                            },
+                            {
+                                src: "mix/mix 8.jpg",
+                                alt: "mix 8",
+                            },
+                            {
+                                src: "mix/mix 9.jpg",
+                                alt: "mix 9",
+                            },
+                        ],
+                    },
+                };
+
+                const galleryContainer =
+                    document.getElementById("gallery-container");
+                const tabButtons = document.querySelectorAll(".tab-button");
+
+                // Function to render gallery for a given category
+                const renderGallery = (categoryKey) => {
+                    galleryContainer.innerHTML = ""; // Clear previous gallery
+                    const categoryData = categories[categoryKey];
+
+                    if (!categoryData) {
+                        console.error("Category not found:", categoryKey);
+                        return;
+                    }
+
+                    const galleryDiv = document.createElement("div");
+                    galleryDiv.id = `${categoryKey}-gallery`;
+                    galleryDiv.className =
+                        "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 p-4";
+
+                    categoryData.images.forEach((image) => {
+                        const itemDiv = document.createElement("div");
+                        itemDiv.className = "gallery-item";
+                        itemDiv.innerHTML = `
+                        <img src="${image.src}" alt="${image.alt}" loading="lazy">
+                    `;
+                        galleryDiv.appendChild(itemDiv);
+                    });
+                    galleryContainer.appendChild(galleryDiv);
+                };
+
+                // Event listener for tab clicks
+                tabButtons.forEach((button) => {
+                    button.addEventListener("click", () => {
+                        // Remove active class from all buttons
+                        tabButtons.forEach((btn) =>
+                            btn.classList.remove("active"),
+                        );
+                        // Add active class to clicked button
+                        button.classList.add("active");
+                        // Render the new gallery
+                        renderGallery(button.dataset.category);
+                    });
+                });
+
+                // Initialize with the first category (Packaging)
+                renderGallery("packaging");
+            });
+        </script>
+    </body>
+</html>

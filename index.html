@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Home</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            body {
+                font-family: "Inter", sans-serif;
+                background-color: #000000; /* Solid black base */
+                position: relative;
+                min-height: 100vh;
+                overflow-x: hidden; /* Prevents horizontal scroll */
+            }
+
+            /*
+        A pseudo-element (::before) is used to display the uploaded cosmic background image.
+        This layer now serves as the primary background.
+        */
+            body::before {
+                content: "";
+                position: fixed; /* Ensures it covers the entire viewport */
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-image: url("./attached_assets/bg_1.png");
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                z-index: -2;
+                opacity: 0.9;
+            }
+
+            /*
+        A second pseudo-element (::after) is used for the dark overlay,
+        ensuring content readability. It sits above the animated gradients.
+        */
+            body::after {
+                content: "";
+                position: fixed; /* Fixed to cover the entire viewport */
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                /* This overlay adds a subtle dark tint and blend effect over the background */
+                background: linear-gradient(
+                    to bottom right,
+                    rgba(0, 0, 0, 0.4),
+                    rgba(0, 0, 0, 0.2)
+                ); /* Slightly less opaque */
+                z-index: -1; /* Placed above the animated gradients (z-index: -2) and below main content */
+            }
+
+            /* Ensure main content is above all background layers */
+            .container {
+                position: relative; /* Essential for z-index to work */
+                z-index: 1; /* Places the main content above all pseudo-elements */
+            }
+
+            /* Applying Playfair Display to name and tagline texts */
+            .name-text,
+            .tagline-text {
+                font-family: "Playfair Display", serif; /* Now uses Playfair Display */
+                color: #ffd700;
+                text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+            }
+
+            .tagline-text {
+                color: #e0e0e0;
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+            }
+
+            .intro-text {
+                font-family: "Playfair Display", serif;
+                color: #c0c0c0;
+                font-style: italic;
+                line-height: 1.8;
+            }
+
+            .icon {
+                /* This filter changes the SVG icon color to gold-like */
+                filter: invert(80%) sepia(100%) saturate(2000%) hue-rotate(0deg)
+                    brightness(100%) contrast(100%);
+            }
+
+            .nav-button {
+                color: #ffd700; /* Gold text color */
+                transition: all 0.1s ease-out; /* Further reduced transition duration for a quicker effect */
+                text-shadow: 0 0 0px rgba(255, 215, 0, 0); /* Initial state, no shadow */
+                padding: 0.75rem 1.5rem; /* px-6 py-3 equivalent */
+                border-radius: 9999px; /* rounded-full equivalent */
+            }
+            .nav-button:hover {
+                color: #fff; /* Lighter gold on hover */
+                transform: scale(
+                    1.02
+                ); /* Slight scale up for a lighter effect */
+                text-shadow: 0 0 5px rgba(255, 215, 0, 0.4); /* Lighter glow on hover */
+            }
+
+            /* Carousel Styles */
+            .carousel-wrapper {
+                width: 100%;
+                overflow: hidden;
+                background-color: rgba(
+                    0,
+                    0,
+                    0,
+                    0.6
+                ); /* Still has a subtle background for contrast */
+                padding: 20px 0;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+                border-radius: 0.75rem; /* rounded-xl equivalent */
+                backdrop-filter: blur(5px); /* Apply blur to carousel wrapper */
+            }
+
+            .carousel-track {
+                display: flex;
+                animation: scrollRightToLeft 70s linear infinite; /* Optimized timing for seamless loop */
+            }
+
+            .carousel-item {
+                min-width: 300px;
+                max-width: 350px;
+                height: auto;
+                margin: 0 20px;
+                border: 1px solid rgba(255, 215, 0, 0.3);
+                box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+                border-radius: 0.5rem; /* rounded-md equivalent for items */
+            }
+
+            .carousel-item img {
+                display: block;
+                width: 100%;
+                height: auto;
+                border-radius: 0.375rem; /* rounded-sm equivalent for images */
+            }
+
+            /* Carousel Animation */
+            @keyframes scrollRightToLeft {
+                0% {
+                    transform: translateX(0);
+                } /* Start with first image visible */
+                100% {
+                    transform: translateX(calc(-15 * (350px + 40px)));
+                } /* Move exactly 15 images, then seamlessly loop back */
+            }
+
+            /* Responsive Adjustments */
+            @media (max-width: 768px) {
+                .name-text {
+                    font-size: 4rem;
+                }
+                .tagline-text {
+                    font-size: 1.75rem;
+                }
+                .intro-text {
+                    font-size: 1rem;
+                }
+                .nav-button-text {
+                    font-size: 0.9rem;
+                }
+                .carousel-item {
+                    min-width: 220px;
+                    max-width: 80%;
+                    margin: 0 10px;
+                }
+            }
+        </style>
+    </head>
+    <body
+        class="flex flex-col items-center min-h-screen pt-12 px-4 pb-4 md:pt-20 md:px-8 md:pb-8"
+    >
+        <div
+            class="container mx-auto flex flex-col md:flex-row items-center md:items-stretch justify-between max-w-7xl mb-8 px-12 md:px-20 md:gap-x-8"
+        >
+            <div
+                class="flex flex-col md:items-start text-left mb-8 md:mb-0 max-w-full md:max-w-2xl main-content-area"
+            >
+                <h1
+                    class="text-5xl md:text-7xl lg:text-8xl font-bold name-text mb-4 leading-tight"
+                >
+                    Rajesh
+                </h1>
+                <h2
+                    class="text-base md:text-xl lg:text-2xl font-semibold tagline-text mb-6"
+                >
+                    Clean Ideas, Clear Impact.
+                </h2>
+                <p
+                    class="text-lg md:text-xl intro-text leading-relaxed font-light max-w-lg"
+                >
+                    I'm Rajesh &mdash; a senior graphic designer with over 15+
+                    years of experience in print, packaging, and branding. I
+                    help brands look bold, luxurious, and professional.
+                </p>
+            </div>
+
+            <div class="flex flex-col space-y-4 buttons-area justify-end">
+                <a
+                    href="visual-archive.html"
+                    class="nav-button flex items-center justify-center md:justify-start whitespace-nowrap"
+                >
+                    <svg
+                        class="icon w-6 h-6 mr-3"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            fill-rule="evenodd"
+                            d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-4 3 3 5-5V15z"
+                            clip-rule="evenodd"
+                        ></path>
+                    </svg>
+                    <span class="nav-button-text text-lg font-medium"
+                        >Visual Archive</span
+                    >
+                </a>
+                <a
+                    href="what-i-offer.html"
+                    class="nav-button flex items-center justify-center md:justify-start whitespace-nowrap"
+                >
+                    <svg
+                        class="icon w-6 h-6 mr-3"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                        <path
+                            fill-rule="evenodd"
+                            d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                            clip-rule="evenodd"
+                        ></path>
+                    </svg>
+                    <span class="nav-button-text text-lg font-medium"
+                        >What I Offer</span
+                    >
+                </a>
+                <a
+                    href="get-in-touch.html"
+                    class="nav-button flex items-center justify-center md:justify-start whitespace-nowrap"
+                >
+                    <svg
+                        class="icon w-6 h-6 mr-3"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg"
+                    >
+                        <path
+                            d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"
+                        ></path>
+                        <path
+                            d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"
+                        ></path>
+                    </svg>
+                    <span class="nav-button-text text-lg font-medium"
+                        >Get in Touch</span
+                    >
+                </a>
+            </div>
+        </div>
+
+        <section class="carousel-wrapper">
+            <div class="carousel-track">
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 1.jpg"
+                        alt="Visual Archive 1.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 2.jpg"
+                        alt="Visual Archive 2.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 3.jpg"
+                        alt="Visual Archive 3.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 4.jpg"
+                        alt="Visual Archive 4.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 5.jpg"
+                        alt="Visual Archive 5.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 6.jpg"
+                        alt="Visual Archive 6.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 7.jpg"
+                        alt="Visual Archive 7.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 8.jpg"
+                        alt="Visual Archive 8.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 9.jpg"
+                        alt="Visual Archive 9.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 10.jpg"
+                        alt="Visual Archive 10.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 11.jpg"
+                        alt="Visual Archive 11.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 12.jpg"
+                        alt="Visual Archive 12.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 13.jpg"
+                        alt="Visual Archive 13.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 14.jpg"
+                        alt="Visual Archive 14.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 15.jpg"
+                        alt="Visual Archive 15.jpg"
+                    />
+                </div>
+                <!-- Duplicate images for seamless loop -->
+                               <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 1.jpg"
+                        alt="Visual Archive 1.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 2.jpg"
+                        alt="Visual Archive 2.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 3.jpg"
+                        alt="Visual Archive 3.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 4.jpg"
+                        alt="Visual Archive 4.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 5.jpg"
+                        alt="Visual Archive 5.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 6.jpg"
+                        alt="Visual Archive 6.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 7.jpg"
+                        alt="Visual Archive 7.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 8.jpg"
+                        alt="Visual Archive 8.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 9.jpg"
+                        alt="Visual Archive 9.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 10.jpg"
+                        alt="Visual Archive 10.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 11.jpg"
+                        alt="Visual Archive 11.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 12.jpg"
+                        alt="Visual Archive 12.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 13.jpg"
+                        alt="Visual Archive 13.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 14.jpg"
+                        alt="Visual Archive 14.jpg"
+                    />
+                </div>
+                <div class="carousel-item">
+                    <img
+                        src="Visual_asset/Visual Archive 15.jpg"
+                        alt="Visual Archive 15.jpg"
+                    />
+                </div>
+            </div>
+        </section>
+    </body>
+</html>
